@@ -37,24 +37,6 @@
     .game-stats span {
       white-space: nowrap;
     }
-    /* Excel-style ribbon button */
-    .btn-new-game {
-      font-family: "Segoe UI", "Calibri", sans-serif;
-      font-size: 12px;
-      padding: 4px 12px;
-      background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%);
-      border: 1px solid #b4b4b4;
-      border-radius: 2px;
-      color: #333;
-      cursor: pointer;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.8) inset;
-    }
-    .btn-new-game:hover {
-      background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
-    }
-    .btn-new-game:active {
-      background: #e0e0e0;
-    }
 
     /* Grid container with Excel look */
     .grid-wrapper {
@@ -200,18 +182,327 @@
       cursor: default;
       pointer-events: none;
     }
+
+    /* Grid disabled (blur) until nickname set */
+    .main-content.disabled {
+      pointer-events: none;
+      filter: blur(3px);
+      opacity: 0.85;
+    }
+
+    /* ========== Excel VBA-style dialog (Nickname prompt) ========== */
+    .vba-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+    }
+    .vba-dialog {
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+      padding: 0;
+      min-width: 320px;
+    }
+    .vba-dialog-title {
+      background: #e8eaed;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+    .vba-dialog-body {
+      padding: 16px 12px;
+      font-size: 12px;
+      color: #333;
+    }
+    .vba-dialog-body label { display: block; margin-bottom: 6px; }
+    .vba-dialog-body input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #b4b4b4;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 12px;
+    }
+    .vba-dialog-footer {
+      padding: 8px 12px;
+      border-top: 1px solid #d0d0d0;
+      background: #f5f6f7;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+    .vba-btn {
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 12px;
+      padding: 4px 14px;
+      background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
+      border: 1px solid #b4b4b4;
+      color: #333;
+      cursor: pointer;
+    }
+    .vba-btn:hover { background: #e8e8e8; }
+
+    /* ========== Help (Excel ribbon-style link + modal) ========== */
+    .help-link {
+      font-size: 12px;
+      color: #0563c1;
+      cursor: pointer;
+      text-decoration: none;
+      padding: 2px 6px;
+    }
+    .help-link:hover { text-decoration: underline; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1001;
+    }
+    .modal-overlay.visible { display: flex; }
+    .excel-modal {
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+      max-width: 420px;
+      max-height: 85vh;
+      overflow: auto;
+    }
+    .excel-modal .modal-title {
+      background: #e8eaed;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+    .excel-modal .modal-body {
+      padding: 12px;
+      font-size: 12px;
+      color: #333;
+      line-height: 1.5;
+    }
+    .excel-modal .modal-body p { margin: 0 0 8px 0; }
+    .excel-modal .modal-footer {
+      padding: 8px 12px;
+      border-top: 1px solid #d0d0d0;
+      background: #f5f6f7;
+      text-align: right;
+    }
+
+    /* ========== Next Update countdown (Excel cell look) ========== */
+    .next-update-cell {
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid #d0d0d0;
+      background: #f3f3f3;
+      font-size: 12px;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      color: #333;
+      min-width: 52px;
+      text-align: center;
+    }
+
+    /* ========== Layout: main + right sidebar (Excel task pane) ========== */
+    .app-layout {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+      max-width: 100%;
+    }
+    .main-content {
+      flex: 0 0 auto;
+    }
+    .sidebar {
+      flex: 0 0 280px;
+      min-width: 280px;
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      border-left: none;
+      box-shadow: -1px 0 2px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+    }
+    .sidebar-title {
+      background: #e8eaed;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #333;
+    }
+    .sidebar-section {
+      border-bottom: 1px solid #d0d0d0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .sidebar-section .section-head {
+      background: #f5f6f7;
+      border-bottom: 1px solid #d0d0d0;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #333;
+    }
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 6px;
+      font-size: 11px;
+      min-height: 120px;
+      max-height: 200px;
+    }
+    .chat-msg {
+      margin-bottom: 4px;
+      padding: 2px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .chat-msg .author { font-weight: 600; color: #333; }
+    .chat-msg .text { color: #444; }
+    .chat-input-row {
+      display: flex;
+      gap: 4px;
+      padding: 6px;
+      border-top: 1px solid #d0d0d0;
+    }
+    .chat-input-row input {
+      flex: 1;
+      padding: 4px 6px;
+      border: 1px solid #d0d0d0;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 11px;
+    }
+    .chat-input-row button {
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 11px;
+      padding: 4px 10px;
+      background: #f0f0f0;
+      border: 1px solid #b4b4b4;
+      color: #333;
+      cursor: pointer;
+    }
+    .chat-input-row button:hover { background: #e8e8e8; }
+
+    /* Leaderboard = Excel data table */
+    .leaderboard-table-wrap {
+      overflow: auto;
+      max-height: 220px;
+    }
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      color: #333;
+    }
+    .leaderboard-table th,
+    .leaderboard-table td {
+      border: 1px solid #d0d0d0;
+      padding: 4px 8px;
+      text-align: left;
+      background: #fff;
+    }
+    .leaderboard-table th {
+      background: #e8e8e8;
+      font-weight: 600;
+    }
+    .leaderboard-table tr:nth-child(even) td { background: #f9f9f9; }
+
+    /* Retry button (shown on game over) */
+    .btn-retry {
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      font-size: 12px;
+      padding: 4px 12px;
+      background: linear-gradient(180deg, #fff 0%, #f0f0f0 100%);
+      border: 1px solid #b4b4b4;
+      color: #333;
+      cursor: pointer;
+      display: none;
+    }
+    .btn-retry.visible { display: inline-block; }
+    .chat-input-row button.cooldown { cursor: not-allowed; color: #888; }
+
+    /* Stealth: Excel-style zoom slider (bottom right) */
+    .zoom-slider-wrap {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      border: 1px solid #d0d0d0;
+      padding: 4px 8px;
+      font-size: 11px;
+      color: #333;
+      font-family: "Segoe UI", "Calibri", sans-serif;
+      z-index: 100;
+    }
+    .zoom-slider-wrap input[type="range"] {
+      width: 80px;
+      height: 6px;
+      accent-color: #333;
+    }
   </style>
 </head>
 <body>
-  <div class="excel-header">
-    <div class="game-stats">
-      <span id="mines-remaining">Mines Remaining: 99</span>
-      <span id="timer">Time: 0</span>
+  <!-- Nickname prompt (VBA-style, on load) -->
+  <div class="vba-overlay" id="nickname-overlay">
+    <div class="vba-dialog">
+      <div class="vba-dialog-title">입력</div>
+      <div class="vba-dialog-body">
+        <label for="nickname-input">닉네임</label>
+        <input type="text" id="nickname-input" placeholder="이름 또는 사번 입력" maxlength="32" />
+      </div>
+      <div class="vba-dialog-footer">
+        <button type="button" class="vba-btn" id="nickname-submit">확인</button>
+      </div>
     </div>
-    <button type="button" class="btn-new-game" id="btn-new-game">New Game</button>
   </div>
 
-  <div class="grid-wrapper" id="grid-wrapper">
+  <!-- Help modal -->
+  <div class="modal-overlay" id="help-modal">
+    <div class="excel-modal">
+      <div class="modal-title">도움말 — 규칙</div>
+      <div class="modal-body">
+        <p><strong>목표</strong></p>
+        <p>지뢰가 없는 모든 칸을 열어보세요. 지뢰가 있는 칸을 클릭하면 안 됩니다.</p>
+        <p><strong>조작</strong></p>
+        <p>• <strong>왼쪽 클릭</strong>: 칸을 엽니다. 숫자는 인접 8칸에 있는 지뢰 개수입니다.</p>
+        <p>• <strong>오른쪽 클릭</strong>: 깃발(지뢰 의심 표시)을 놓거나 제거합니다.</p>
+        <p>• <strong>0</strong>이 나온 칸은 인접한 빈 칸과 숫자 칸이 자동으로 열립니다.</p>
+        <p><strong>보드</strong></p>
+        <p>매 시 정각에 같은 맵이 전 세계 동기화됩니다. 클리어 시간이 실시간 랭킹에 기록됩니다.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="vba-btn" id="help-close">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-opacity-wrap" id="app-opacity-wrap">
+  <div class="app-layout">
+    <div class="main-content disabled" id="main-content">
+      <div class="excel-header">
+        <div class="game-stats">
+          <span id="mines-remaining">남은 지뢰: 99</span>
+          <span id="timer">진행 시간: 0</span>
+          <span id="next-update-label">다음 맵 갱신: <span class="next-update-cell" id="next-update">--:--</span></span>
+          <button type="button" class="btn-retry" id="btn-retry">다시 하기</button>
+        </div>
+        <a href="#" class="help-link" id="help-link">도움말</a>
+      </div>
+
+      <div class="grid-wrapper" id="grid-wrapper">
     <!-- Column headers row: corner + A..AD (30 cols) -->
     <div class="col-headers" id="col-headers"></div>
     <div class="grid-body">
@@ -219,32 +510,114 @@
       <div class="cells-container" id="cells-container"></div>
     </div>
   </div>
+    </div>
 
+    <aside class="sidebar">
+      <div class="sidebar-title">작업 창</div>
+      <div class="sidebar-section">
+        <div class="section-head">대화</div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chat-input" placeholder="메시지 입력..." />
+          <button type="button" id="chat-send" title="">전송</button>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <div class="section-head">실시간 랭킹</div>
+        <div class="leaderboard-table-wrap">
+          <table class="leaderboard-table">
+            <thead><tr><th>순위</th><th>이름</th><th>시간(초)</th></tr></thead>
+            <tbody id="leaderboard-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+  </div>
+  </div>
+
+  <div class="zoom-slider-wrap" title="화면 배율">
+    <span>화면 배율</span>
+    <input type="range" id="opacity-slider" min="10" max="100" value="100" />
+    <span id="opacity-value">100%</span>
+  </div>
+
+  <!-- Firebase SDK (add your config below) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
   <script>
     (function () {
       "use strict";
+
+      // ========== TODO: ADD FIREBASE CONFIG HERE ==========
+      // Replace the object below with your Firebase project config from Firebase Console.
+      const firebaseConfig = {
+        apiKey: "AIzaSyDEWeclB2KUxlBMNGG-j6ICILX3q1YqVHI",
+        authDomain: "office-survival-game.firebaseapp.com",
+        databaseURL: "https://office-survival-game-default-rtdb.firebaseio.com",
+        projectId: "office-survival-game",
+        storageBucket: "office-survival-game.firebasestorage.app",
+        messagingSenderId: "251056546065",
+        appId: "1:251056546065:web:b1fd70deda7146f53f2cb0",
+        measurementId: "G-6GKBBLYJ6G"
+      };
+
+      let db = null;
+      try {
+        if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY") {
+          firebase.initializeApp(firebaseConfig);
+          db = firebase.database();
+        }
+      } catch (e) {
+        console.warn("Firebase not configured or failed to init:", e);
+      }
 
       // ========== Constants (Expert difficulty) ==========
       const COLS = 30;
       const ROWS = 16;
       const MINES = 99;
+      const NICKNAME_STORAGE_KEY = "minesweeper_nickname";
 
       // ========== State ==========
-      let grid = [];           // 2D: { mine, revealed, flagged, adjacentCount }
+      let grid = [];
       let firstClick = true;
       let gameOver = false;
       let gameWon = false;
       let flagsPlaced = 0;
       let timerId = null;
       let seconds = 0;
+      let nickname = "";
+      let currentHourKey = "";
+      let nextUpdateIntervalId = null;
+      let chatRef = null;
 
       // DOM refs
       const minesEl = document.getElementById("mines-remaining");
       const timerEl = document.getElementById("timer");
-      const btnNewGame = document.getElementById("btn-new-game");
       const colHeadersEl = document.getElementById("col-headers");
       const rowHeadersEl = document.getElementById("row-headers");
       const cellsContainerEl = document.getElementById("cells-container");
+      const mainContentEl = document.getElementById("main-content");
+      const nicknameOverlayEl = document.getElementById("nickname-overlay");
+      const nicknameInputEl = document.getElementById("nickname-input");
+      const nicknameSubmitEl = document.getElementById("nickname-submit");
+      const helpModalEl = document.getElementById("help-modal");
+      const helpLinkEl = document.getElementById("help-link");
+      const helpCloseEl = document.getElementById("help-close");
+      const nextUpdateEl = document.getElementById("next-update");
+      const chatMessagesEl = document.getElementById("chat-messages");
+      const chatInputEl = document.getElementById("chat-input");
+      const chatSendEl = document.getElementById("chat-send");
+      const leaderboardBodyEl = document.getElementById("leaderboard-body");
+      const btnRetryEl = document.getElementById("btn-retry");
+      const appOpacityWrapEl = document.getElementById("app-opacity-wrap");
+      const opacitySliderEl = document.getElementById("opacity-slider");
+      const opacityValueEl = document.getElementById("opacity-value");
+
+      const CHAT_COOLDOWN_MS = 5000;
+      const SEND_BTN_TEXT = "전송";
+      const SEND_BTN_WAITING = "대기중...";
+      let lastChatSendTime = 0;
+      let chatCooldownTimerId = null;
 
       // ========== Column label helper (A, B, ... Z, AA, AB, AC, AD) ==========
       function getColLabel(index) {
@@ -252,6 +625,50 @@
         const first = Math.floor(index / 26) - 1;
         const second = index % 26;
         return String.fromCharCode(65 + first) + String.fromCharCode(65 + second);
+      }
+
+      // ========== Hour key for global synchronized board (YYYY-MM-DD-HH) ==========
+      function getHourKey(date) {
+        const d = date || new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        const h = String(d.getHours()).padStart(2, "0");
+        return y + "-" + m + "-" + day + "-" + h;
+      }
+
+      // Seconds until next hour (for countdown display)
+      function getSecondsUntilNextHour() {
+        const now = new Date();
+        const next = new Date(now);
+        next.setHours(next.getHours() + 1);
+        next.setMinutes(0);
+        next.setSeconds(0);
+        next.setMilliseconds(0);
+        return Math.max(0, Math.floor((next - now) / 1000));
+      }
+
+      function formatCountdown(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+      }
+
+      // ========== Seeded RNG (Mulberry32) for identical boards per hour ==========
+      function mulberry32(seed) {
+        return function () {
+          seed |= 0;
+          seed = (seed + 0x6d2b79f5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function seedFromHourKey(key) {
+        let h = 0;
+        for (let i = 0; i < key.length; i++) h = (Math.imul(31, h) + key.charCodeAt(i)) | 0;
+        return h >>> 0;
       }
 
       // ========== Build header DOM ==========
@@ -291,7 +708,7 @@
         return out;
       }
 
-      // ========== Initialize grid (no mines yet; mines placed on first click) ==========
+      // ========== Initialize grid (empty, no mines) ==========
       function initGrid() {
         grid = [];
         for (let r = 0; r < ROWS; r++) {
@@ -307,23 +724,41 @@
         }
       }
 
-      // ========== Place mines, avoiding (firstR, firstC) ==========
-      function placeMines(firstR, firstC) {
-        const avoid = new Set();
-        avoid.add(firstR * COLS + firstC);
-        getNeighbors(firstR, firstC).forEach(function (rc) { avoid.add(rc[0] * COLS + rc[1]); });
+      // ========== Place mines from hour seed; same board for everyone. First click made safe by swap if needed. ==========
+      function placeMinesFromSeed(firstR, firstC) {
+        const key = getHourKey();
+        const seed = seedFromHourKey(key);
+        const rng = mulberry32(seed);
 
-        let placed = 0;
-        while (placed < MINES) {
-          const r = Math.floor(Math.random() * ROWS);
-          const c = Math.floor(Math.random() * COLS);
-          const id = r * COLS + c;
-          if (avoid.has(id) || grid[r][c].mine) continue;
+        const indices = [];
+        for (let i = 0; i < ROWS * COLS; i++) indices.push(i);
+        for (let i = indices.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          const t = indices[i];
+          indices[i] = indices[j];
+          indices[j] = t;
+        }
+        for (let i = 0; i < MINES; i++) {
+          const idx = indices[i];
+          const r = Math.floor(idx / COLS);
+          const c = idx % COLS;
           grid[r][c].mine = true;
-          placed++;
         }
 
-        // Count adjacent mines
+        const firstIdx = firstR * COLS + firstC;
+        if (grid[firstR][firstC].mine) {
+          grid[firstR][firstC].mine = false;
+          for (let i = MINES; i < indices.length; i++) {
+            const idx = indices[i];
+            const r = Math.floor(idx / COLS);
+            const c = idx % COLS;
+            if (!grid[r][c].mine) {
+              grid[r][c].mine = true;
+              break;
+            }
+          }
+        }
+
         for (let r = 0; r < ROWS; r++) {
           for (let c = 0; c < COLS; c++) {
             if (grid[r][c].mine) continue;
@@ -343,7 +778,7 @@
 
         if (firstClick) {
           firstClick = false;
-          placeMines(r, c);
+          placeMinesFromSeed(r, c);
           startTimer();
         }
 
@@ -401,11 +836,28 @@
         }
       }
 
+      // ========== Submit clear time to Firebase leaderboard (current hour only) ==========
+      function submitToLeaderboard() {
+        if (!db || !nickname || !currentHourKey) return;
+        try {
+          const ref = db.ref("leaderboard/" + currentHourKey);
+          ref.push({ name: nickname, time: seconds });
+        } catch (e) {
+          console.warn("Leaderboard submit failed:", e);
+        }
+      }
+
       // ========== End game ==========
       function endGame(won) {
         gameOver = !won;
         gameWon = won;
         stopTimer();
+        if (won) {
+          submitToLeaderboard();
+          if (btnRetryEl) btnRetryEl.classList.remove("visible");
+        } else {
+          if (btnRetryEl) btnRetryEl.classList.add("visible");
+        }
         document.querySelectorAll(".cell").forEach(function (el) {
           el.classList.add("game-over");
         });
@@ -415,10 +867,10 @@
       function startTimer() {
         if (timerId) return;
         seconds = 0;
-        timerEl.textContent = "Time: 0";
+        timerEl.textContent = "진행 시간: 0";
         timerId = setInterval(function () {
           seconds++;
-          timerEl.textContent = "Time: " + seconds;
+          timerEl.textContent = "진행 시간: " + seconds;
         }, 1000);
       }
       function stopTimer() {
@@ -428,7 +880,7 @@
 
       // ========== Update stats display ==========
       function updateMinesDisplay() {
-        minesEl.textContent = "Mines Remaining: " + (MINES - flagsPlaced);
+        minesEl.textContent = "남은 지뢰: " + (MINES - flagsPlaced);
       }
 
       // ========== Build/update single cell DOM ==========
@@ -492,25 +944,233 @@
         }
       }
 
-      // ========== New game ==========
-      function newGame() {
+      // ========== Load board for current hour (synchronized globally); resets at top of next hour ==========
+      function loadBoardForHour(forceRetry) {
+        const key = getHourKey();
+        if (!forceRetry && key === currentHourKey && grid.length > 0) return;
+
+        if (key !== currentHourKey) {
+          currentHourKey = key;
+          chatMessagesEl.innerHTML = "";
+          leaderboardBodyEl.innerHTML = "";
+          if (chatRef) {
+            try { chatRef.off("value"); } catch (e) {}
+            chatRef = null;
+          }
+        }
+        if (!currentHourKey) currentHourKey = key;
+
         firstClick = true;
         gameOver = false;
         gameWon = false;
         flagsPlaced = 0;
+        if (btnRetryEl) btnRetryEl.classList.remove("visible");
         stopTimer();
         seconds = 0;
-        timerEl.textContent = "Time: 0";
+        timerEl.textContent = "진행 시간: 0";
         updateMinesDisplay();
 
         initGrid();
         buildGrid();
+        updateNextUpdateCountdown();
+        attachLeaderboardListener();
+        attachChatListener();
+      }
+
+      function updateNextUpdateCountdown() {
+        if (nextUpdateIntervalId) clearInterval(nextUpdateIntervalId);
+        function tick() {
+          const secs = getSecondsUntilNextHour();
+          nextUpdateEl.textContent = formatCountdown(secs);
+          if (secs <= 0) loadBoardForHour();
+        }
+        tick();
+        nextUpdateIntervalId = setInterval(tick, 1000);
+      }
+
+      // ========== Leaderboard: listen to Firebase for current hour ==========
+      function attachLeaderboardListener() {
+        if (!db || !currentHourKey) return;
+        try {
+          const ref = db.ref("leaderboard/" + currentHourKey);
+          ref.orderByChild("time").on("value", function (snap) {
+            const list = [];
+            snap.forEach(function (child) {
+              list.push({ key: child.key, name: child.val().name, time: child.val().time });
+            });
+            list.sort(function (a, b) { return a.time - b.time; });
+            renderLeaderboard(list.slice(0, 20));
+          });
+        } catch (e) {
+          console.warn("Leaderboard listen failed:", e);
+        }
+      }
+
+      function renderLeaderboard(list) {
+        leaderboardBodyEl.innerHTML = "";
+        list.forEach(function (row, i) {
+          const tr = document.createElement("tr");
+          tr.innerHTML = "<td>" + (i + 1) + "</td><td>" + escapeHtml(row.name) + "</td><td>" + row.time + "</td>";
+          leaderboardBodyEl.appendChild(tr);
+        });
+      }
+
+      function escapeHtml(s) {
+        const div = document.createElement("div");
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
+      // ========== Chat: send and listen via Firebase (5s cooldown) ==========
+      function setChatCooldown(on) {
+        if (on) {
+          chatSendEl.textContent = SEND_BTN_WAITING;
+          chatSendEl.classList.add("cooldown");
+          chatSendEl.disabled = true;
+          chatSendEl.title = "5초 후에 다시 전송할 수 있습니다.";
+        } else {
+          chatSendEl.textContent = SEND_BTN_TEXT;
+          chatSendEl.classList.remove("cooldown");
+          chatSendEl.disabled = false;
+          chatSendEl.title = "";
+        }
+      }
+
+      function sendChatMessage() {
+        const text = (chatInputEl.value || "").trim();
+        if (!text || !nickname) return;
+        const now = Date.now();
+        if (now - lastChatSendTime < CHAT_COOLDOWN_MS) {
+          setChatCooldown(true);
+          if (chatCooldownTimerId) clearTimeout(chatCooldownTimerId);
+          chatCooldownTimerId = setTimeout(function () { setChatCooldown(false); }, CHAT_COOLDOWN_MS - (now - lastChatSendTime));
+          return;
+        }
+        lastChatSendTime = now;
+        setChatCooldown(true);
+        if (chatCooldownTimerId) clearTimeout(chatCooldownTimerId);
+        chatCooldownTimerId = setTimeout(function () { setChatCooldown(false); }, CHAT_COOLDOWN_MS);
+
+        if (!db) {
+          chatMessagesEl.appendChild(makeChatMsgEl(nickname, text));
+          chatInputEl.value = "";
+          return;
+        }
+        try {
+          db.ref("chat/" + currentHourKey).push({ name: nickname, text: text, ts: Date.now() });
+          chatInputEl.value = "";
+        } catch (e) {
+          console.warn("Chat send failed:", e);
+        }
+      }
+
+      function makeChatMsgEl(name, text) {
+        const div = document.createElement("div");
+        div.className = "chat-msg";
+        div.innerHTML = "<span class=\"author\">" + escapeHtml(name) + ":</span> <span class=\"text\">" + escapeHtml(text) + "</span>";
+        return div;
+      }
+
+      function attachChatListener() {
+        if (!db) return;
+        try {
+          if (chatRef) {
+            chatRef.off("value");
+            chatRef = null;
+          }
+          if (!currentHourKey) return;
+          chatRef = db.ref("chat/" + currentHourKey);
+          chatRef.orderByChild("ts").limitToLast(50).on("value", function (snap) {
+            chatMessagesEl.innerHTML = "";
+            const list = [];
+            snap.forEach(function (child) {
+              list.push(child.val());
+            });
+            list.forEach(function (msg) {
+              chatMessagesEl.appendChild(makeChatMsgEl(msg.name || "?", msg.text || ""));
+            });
+          });
+        } catch (e) {
+          console.warn("Chat listen failed:", e);
+        }
+      }
+
+      // ========== Nickname dialog: require before playing ==========
+      function applyNickname() {
+        const value = (nicknameInputEl.value || "").trim();
+        if (!value) return;
+        nickname = value.slice(0, 32);
+        try {
+          localStorage.setItem(NICKNAME_STORAGE_KEY, nickname);
+        } catch (e) {}
+        nicknameOverlayEl.style.display = "none";
+        mainContentEl.classList.remove("disabled");
+        attachChatListener();
+        loadBoardForHour();
+      }
+
+      nicknameSubmitEl.addEventListener("click", applyNickname);
+      nicknameInputEl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") applyNickname();
+      });
+
+      // ========== Help modal ==========
+      helpLinkEl.addEventListener("click", function (e) {
+        e.preventDefault();
+        helpModalEl.classList.add("visible");
+      });
+      helpCloseEl.addEventListener("click", function () {
+        helpModalEl.classList.remove("visible");
+      });
+
+      // ========== Chat send ==========
+      chatSendEl.addEventListener("click", sendChatMessage);
+      chatInputEl.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") sendChatMessage();
+      });
+
+      // ========== Retry (same hour board) ==========
+      if (btnRetryEl) {
+        btnRetryEl.addEventListener("click", function () {
+          loadBoardForHour(true);
+        });
+      }
+
+      // ========== Stealth: opacity slider (Excel zoom style) ==========
+      const OPACITY_STORAGE_KEY = "minesweeper_opacity";
+      if (appOpacityWrapEl && opacitySliderEl && opacityValueEl) {
+        try {
+          const saved = parseInt(localStorage.getItem(OPACITY_STORAGE_KEY), 10);
+          if (!isNaN(saved) && saved >= 10 && saved <= 100) {
+            opacitySliderEl.value = saved;
+            appOpacityWrapEl.style.opacity = saved / 100;
+            opacityValueEl.textContent = saved + "%";
+          }
+        } catch (e) {}
+        opacitySliderEl.addEventListener("input", function () {
+          const v = parseInt(this.value, 10);
+          appOpacityWrapEl.style.opacity = v / 100;
+          opacityValueEl.textContent = v + "%";
+          try { localStorage.setItem(OPACITY_STORAGE_KEY, String(v)); } catch (e) {}
+        });
       }
 
       // ========== Init ==========
-      btnNewGame.addEventListener("click", newGame);
       buildHeaders();
-      newGame();
+      try {
+        const saved = localStorage.getItem(NICKNAME_STORAGE_KEY);
+        if (saved && saved.trim()) {
+          nickname = saved.trim().slice(0, 32);
+          nicknameInputEl.value = nickname;
+          nicknameOverlayEl.style.display = "none";
+          mainContentEl.classList.remove("disabled");
+          attachChatListener();
+        }
+      } catch (e) {}
+      loadBoardForHour();
+      if (mainContentEl.classList.contains("disabled")) {
+        nextUpdateEl.textContent = "--:--";
+      }
     })();
   </script>
 </body>
