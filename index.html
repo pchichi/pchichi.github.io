@@ -1746,18 +1746,26 @@
 
       // ========== Presence: online_users + .info/connected + onDisconnect ==========
       function setupPresence() {
-        if (!db || !onlineCountBarEl) return;
-        if (!nickname) return;
-        var userKey = sanitizeNickname(nickname);
-        var connectedRef = db.ref(".info/connected");
+        // 1. db가 없거나 닉네임 입력 전이면 실행 방지
+        if (!db || !onlineCountBarEl || !nickname) return;
+
+        const userKey = sanitizeNickname(nickname);
+        const connectedRef = db.ref(".info/connected");
+        const myPresenceRef = db.ref("online_users/" + userKey);
+
         connectedRef.on("value", function (snap) {
           if (snap.val() !== true) return;
-          var sessionRef = db.ref("online_users/" + userKey);
-          sessionRef.onDisconnect().remove();
-          sessionRef.set(true);
+
+          // 2. 연결이 끊길 때 해당 닉네임의 데이터만 삭제
+          myPresenceRef.onDisconnect().remove();
+          
+          // 3. 접속 시 닉네임을 경로(Key)로 사용하여 데이터 생성 (중복 방지)
+          myPresenceRef.set(true);
         });
+
+        // 4. 전체 접속자 수 모니터링
         db.ref("online_users").on("value", function (snap) {
-          var n = snap.numChildren();
+          const n = snap.numChildren();
           onlineCountBarEl.textContent = "현재 접속자: " + n + "명";
         });
       }
@@ -1949,6 +1957,7 @@
           mainContentEl.classList.remove("disabled");
           attachChatListener();
           loadBoardForHour();
+          setupPresence();
           return;
         }
 
@@ -1956,12 +1965,14 @@
         var ref = db.ref("users/" + userKey);
         ref.once("value", function (snap) {
           if (!snap.exists()) {
+            //  신규 등록 시
             ref.set({ nickname: nickname, password: pwd });
             try { localStorage.setItem(NICKNAME_STORAGE_KEY, nickname); } catch (e) {}
             nicknameOverlayEl.style.display = "none";
             mainContentEl.classList.remove("disabled");
             attachChatListener();
             loadBoardForHour();
+            setupPresence();
           } else {
             var stored = snap.val();
             if (stored && stored.password === pwd) {
@@ -1970,6 +1981,7 @@
               mainContentEl.classList.remove("disabled");
               attachChatListener();
               loadBoardForHour();
+              setupPresence();
             } else {
               showPasswordError();
             }
